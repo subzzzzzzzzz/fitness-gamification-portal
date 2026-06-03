@@ -1,0 +1,224 @@
+<div class="auth-container">
+  <!-- Left/Top Brand Panel -->
+  <div class="brand-panel">
+    <div class="brand-header">
+      <div class="brand-logo">SW</div>
+      <div class="brand-name">Smartwatch LB</div>
+    </div>
+    <div class="brand-body">
+      <h2 class="brand-title">Track. Compete. Achieve.</h2>
+      <p class="brand-subtitle">Your personal fitness leaderboard.</p>
+      
+      <ul class="brand-features">
+        <li>
+          <span class="bullet"><svg lucideIcon="check" size="14"></svg></span>
+          Complete daily fitness tasks
+        </li>
+        <li>
+          <span class="bullet"><svg lucideIcon="check" size="14"></svg></span>
+          Compete in global challenges
+        </li>
+        <li>
+          <span class="bullet"><svg lucideIcon="check" size="14"></svg></span>
+          Live leaderboard rankings
+        </li>
+        <li>
+          <span class="bullet"><svg lucideIcon="check" size="14"></svg></span>
+          Sync your smartwatch data
+        </li>
+      </ul>
+    </div>
+    <div class="brand-footer">
+      Powered by Angular 20 & Material
+    </div>
+  </div>
+
+  <!-- Right/Bottom Form Panel -->
+  <div class="form-panel">
+    <div class="form-wrapper">
+      @if (isLogin()) {
+        <!-- Login View -->
+        <h2>Welcome back</h2>
+        <p class="form-desc">Sign in to your account</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+          <div class="form-field">
+            <label class="required" for="email">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              placeholder="alex.smith@example.com"
+              [ngClass]="{'error-border': showErrors() && loginForm.get('email')?.invalid}"
+            />
+            @if (showErrors() && loginForm.get('email')?.hasError('required')) {
+              <div class="error-text">Email is required</div>
+            }
+            @if (showErrors() && loginForm.get('email')?.hasError('email')) {
+              <div class="error-text">Please enter a valid email</div>
+            }
+          </div>
+
+          <div class="form-field">
+            <label class="required" for="password">Password</label>
+            <div class="password-input-wrapper">
+              <input 
+                [type]="showPassword() ? 'text' : 'password'" 
+                id="password" 
+                formControlName="password" 
+                placeholder="••••••••"
+                [ngClass]="{'error-border': showErrors() && loginForm.get('password')?.invalid}"
+              />
+              <button type="button" class="password-toggle" (click)="togglePassword()">
+                <svg [lucideIcon]="showPassword() ? 'eye-off' : 'eye'" size="18"></svg>
+              </button>
+            </div>
+            @if (showErrors() && loginForm.get('password')?.hasError('required')) {
+              <div class="error-text">Password is required</div>
+            }
+          </div>
+
+          <div class="form-options">
+            <label class="remember-me">
+              <input type="checkbox" formControlName="rememberMe" />
+              <span>Remember me</span>
+            </label>
+            <a class="forgot-link" (click)="forgotPassword()">Forgot password?</a>
+          </div>
+
+          @if (authError()) {
+            <div class="form-alert error">
+              {{ authError() }}
+            </div>
+          }
+
+          <button type="submit" class="btn btn-primary w-full" [disabled]="loading()">
+            {{ loading() ? 'Signing in...' : 'Sign In' }}
+          </button>
+
+          <div class="switch-mode">
+            Don't have an account? 
+            <a (click)="setMode(false)">Create Account →</a>
+          </div>
+        </form>
+      } @else {
+        <!-- Register View -->
+        <h2>Create Account</h2>
+        <p class="form-desc">Fill in your details to get started</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+          <div class="grid-form">
+            <div class="form-field">
+              <label class="required" for="regName">Full Name</label>
+              <input 
+                type="text" 
+                id="regName" 
+                formControlName="name" 
+                placeholder="Alex Smith"
+                [ngClass]="{'error-border': showErrors() && registerForm.get('name')?.invalid}"
+              />
+              @if (showErrors() && registerForm.get('name')?.hasError('required')) {
+                <div class="error-text">Full name is required</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="regEmail">Email</label>
+              <input 
+                type="email" 
+                id="regEmail" 
+                formControlName="email" 
+                placeholder="your@email.com"
+                [ngClass]="{'error-border': showErrors() && registerForm.get('email')?.invalid}"
+              />
+              @if (showErrors() && registerForm.get('email')?.hasError('required')) {
+                <div class="error-text">Email is required</div>
+              }
+              @if (showErrors() && registerForm.get('email')?.hasError('email')) {
+                <div class="error-text">Please enter a valid email</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="regPhone">Phone (optional)</label>
+              <input 
+                type="text" 
+                id="regPhone" 
+                formControlName="phone" 
+                placeholder="+91 690-933-8847"
+              />
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="regPassword">Password</label>
+              <input 
+                type="password" 
+                id="regPassword" 
+                formControlName="password" 
+                placeholder="Min 8 chars"
+                [ngClass]="{'error-border': showErrors() && registerForm.get('password')?.invalid}"
+              />
+              @if (showErrors() && registerForm.get('password')?.hasError('required')) {
+                <div class="error-text">Password is required</div>
+              }
+              @if (showErrors() && registerForm.get('password')?.hasError('minlength')) {
+                <div class="error-text">Must be at least 8 characters</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="regConfirm">Confirm Pwd</label>
+              <input 
+                type="password" 
+                id="regConfirm" 
+                formControlName="confirmPassword" 
+                placeholder="Re-enter..."
+                [ngClass]="{'error-border': showErrors() && registerForm.get('confirmPassword')?.invalid}"
+              />
+              @if (showErrors() && registerForm.get('confirmPassword')?.hasError('required')) {
+                <div class="error-text">Please confirm your password</div>
+              }
+              @if (showErrors() && registerForm.hasError('passwordsMismatch')) {
+                <div class="error-text">Passwords do not match</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label for="regCity">City (optional)</label>
+              <input 
+                type="text" 
+                id="regCity" 
+                formControlName="city" 
+                placeholder="Bengaluru"
+              />
+            </div>
+
+            <div class="form-field full-width">
+              <label for="regRegion">Region (optional)</label>
+              <select id="regRegion" formControlName="region">
+                <option value="APAC">APAC</option>
+                <option value="EMEA">EMEA</option>
+                <option value="AMER">AMER</option>
+              </select>
+            </div>
+          </div>
+
+          @if (authError()) {
+            <div class="form-alert error">
+              {{ authError() }}
+            </div>
+          }
+
+          <button type="submit" class="btn btn-primary w-full mt-md" [disabled]="loading()">
+            {{ loading() ? 'Creating account...' : 'Create Account' }}
+          </button>
+
+          <div class="switch-mode">
+            Already registered? 
+            <a (click)="setMode(true)">Sign In →</a>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,221 @@
+<div class="dashboard-container">
+  
+  <!-- Greeting Header Banner -->
+  <div class="greeting-banner">
+    <div class="greeting-left">
+      <div class="greeting-row">
+        <h1>Good morning, {{ userName() }}</h1>
+        <span class="activity-dot-pulse"></span>
+      </div>
+      <p class="greeting-sub">Wednesday, 27 May 2026 &bull; Evening Watch 336 synced 2 hrs ago</p>
+    </div>
+    <div class="greeting-right">
+      <div class="mini-stat">
+        <span class="label">Points</span>
+        <span class="val">{{ userPoints() }}</span>
+      </div>
+      <div class="mini-stat-divider"></div>
+      <div class="mini-stat">
+        <span class="label">Rank</span>
+        <span class="val">#3</span>
+      </div>
+      <div class="mini-stat-divider"></div>
+      <div class="mini-stat">
+        <span class="label">Tasks</span>
+        <span class="val">4/5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Stats Grid Row -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue-bar">
+      <div class="kpi-value blue-text">{{ userPoints() }} pts</div>
+      <div class="kpi-label">Total Points</div>
+      <div class="kpi-sub">+12% this week</div>
+    </div>
+
+    <div class="kpi-card gold-bar">
+      <div class="kpi-value gold-text">#3</div>
+      <div class="kpi-label">Global Rank</div>
+      <div class="kpi-sub">of 20 active users</div>
+    </div>
+
+    <div class="kpi-card green-bar">
+      <div class="kpi-value green-text">4 / 5</div>
+      <div class="kpi-label">Tasks Completed</div>
+      <div class="kpi-sub">80% completion rate</div>
+    </div>
+
+    <div class="kpi-card indigo-bar">
+      <div class="kpi-value indigo-text">2</div>
+      <div class="kpi-label">Active Challenges</div>
+      <div class="kpi-sub">1 expiring in 2 days</div>
+    </div>
+  </div>
+
+  <!-- 2-Column Responsive Layout (58% / 42% split) -->
+  <div class="dashboard-grid">
+    
+    <!-- Left Column (58%) -->
+    <div class="left-col">
+      <!-- Step Count 14-day Chart Card -->
+      <div class="card chart-card">
+        <div class="flex-between mb-lg">
+          <h3 class="section-title">Daily Steps &mdash; Last 14 Days</h3>
+          <span class="chart-subtitle">(ActivityItemResponse activityDate + stepCountValue)</span>
+        </div>
+        
+        <!-- Chart Container -->
+        <div class="bar-chart-container">
+          <!-- Y-Axis markers -->
+          <div class="y-axis-labels">
+            <span>15k</span>
+            <span>10k</span>
+            <span>5k</span>
+            <span>0</span>
+          </div>
+
+          <!-- Goal Line -->
+          <div class="goal-line" style="bottom: 66.6%;">
+            <span class="goal-label">10k goal</span>
+          </div>
+
+          <!-- Bars List -->
+          <div class="chart-bars">
+            @for (log of chartLogs(); track log.id) {
+              <div class="bar-col">
+                <div class="bar-wrapper">
+                  <!-- Bar Tooltip -->
+                  <div class="bar-tooltip">
+                    <strong>{{ log.stepCount | number }}</strong> steps
+                    <span class="text-xs">{{ log.submittedAt | date:'MMM d' }}</span>
+                  </div>
+                  <!-- Actual Bar -->
+                  <div 
+                    class="bar-fill" 
+                    [ngClass]="getBarClass(log.stepCount)"
+                    [style.height.%]="getBarHeightPercentage(log.stepCount)"
+                  ></div>
+                </div>
+                <!-- Date Label -->
+                <span class="bar-date-label">{{ log.submittedAt | date:'d' }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Chart Legend -->
+        <div class="chart-legend mt-lg">
+          <div class="legend-item"><span class="legend-dot green"></span> &ge;10k steps</div>
+          <div class="legend-item"><span class="legend-dot amber"></span> 6k-10k</div>
+          <div class="legend-item"><span class="legend-dot red"></span> &lt;6k</div>
+          <div class="legend-item-goal"><span class="legend-line-dashed"></span> Goal Line</div>
+          <div class="legend-item-today"><span class="legend-today-border"></span> Today</div>
+        </div>
+      </div>
+
+      <!-- Active Challenges list -->
+      <div class="card challenges-card">
+        <h3 class="section-title mb-lg">Active Challenges</h3>
+        
+        <div class="challenges-list">
+          @for (challenge of joinedChallenges(); track challenge.id) {
+            <div class="challenge-row-item">
+              <div class="challenge-info">
+                <div class="challenge-header-info">
+                  <h4>{{ challenge.name }}</h4>
+                  <span class="chip" [ngClass]="challenge.status === 'ACTIVE' ? 'active' : 'closed'">
+                    {{ challenge.status }}
+                  </span>
+                </div>
+                <p class="challenge-desc">{{ challenge.description }}</p>
+                
+                <div class="challenge-meta">
+                  <span class="scope-badge" [ngClass]="challenge.scope | lowercase">{{ challenge.scope }}</span>
+                  @if (challenge.region) {
+                    <span class="meta-label">{{ challenge.region }}</span>
+                  }
+                  <span class="meta-divider">&bull;</span>
+                  <span class="expiry-text" [ngClass]="{'expires-soon': challenge.id === 1}">
+                    {{ getChallengeExpiryText(challenge) }}
+                  </span>
+                </div>
+              </div>
+              <div class="challenge-action">
+                <span class="rank-badge">Rank #{{ challenge.id === 1 ? '2' : '3' }}</span>
+                <button class="icon-btn" [routerLink]="['/challenges']">
+                  <svg lucideIcon="chevron-right" size="18"></svg>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column (42%) -->
+    <div class="right-col">
+      <!-- My Tasks (Read-only progress list) -->
+      <div class="card tasks-progress-card">
+        <h3 class="section-title mb-lg">My Tasks</h3>
+        
+        <div class="tasks-progress-list">
+          @for (task of dashboardTasks(); track task.id) {
+            <div class="task-progress-item">
+              <div class="task-progress-header">
+                <div>
+                  <span class="task-title">{{ task.name }}</span>
+                  <span class="task-chip-status" [ngClass]="task.status | lowercase">{{ task.status }}</span>
+                </div>
+                <span class="points-badge">{{ task.points }} pts</span>
+              </div>
+              
+              <!-- Tag badge -->
+              <div class="task-tags mt-xs">
+                @for (tag of task.requiredTags; track tag) {
+                  <span class="tag-chip">{{ tag }}</span>
+                }
+              </div>
+
+              <!-- Custom Progress bar visual matching Figma -->
+              <div class="progress-bar-wrapper mt-md">
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" [style.width.%]="getTaskProgressPercent(task.id)"></div>
+                </div>
+                <div class="progress-details mt-xs">
+                  <span>{{ getTaskProgressSteps(task.id, task.steps) }} steps</span>
+                  <span class="percent-label">{{ getTaskProgressPercent(task.id) }}% complete</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Reward Badges Row -->
+      <div class="card rewards-card">
+        <h3 class="section-title mb-lg">My Rewards</h3>
+        
+        <div class="rewards-badges-row">
+          @for (badge of userBadges(); track badge.id) {
+            <div class="reward-pill" [ngClass]="getRewardPillClass(badge.name)">
+              <svg lucideIcon="star" size="14"></svg>
+              <span>{{ badge.name }}</span>
+            </div>
+          }
+          <!-- Locked placeholders -->
+          <div class="reward-pill locked">
+            <svg lucideIcon="star" size="14"></svg>
+            <span>Goal-Getter (locked)</span>
+          </div>
+          <div class="reward-pill locked">
+            <svg lucideIcon="star" size="14"></svg>
+            <span>Night Owl (locked)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,376 @@
+<div class="tasks-container">
+  
+  <!-- Top Success Toast Simulation if state shows success -->
+  <!-- We have global toasts, so we rely on them! -->
+
+  <!-- ADMIN VIEW -->
+  @if (isAdmin()) {
+    @if (isFormOpen()) {
+      <!-- Create / Edit Form -->
+      <div class="form-card card">
+        <div class="form-breadcrumbs">
+          <span class="crumb-link" (click)="closeForm()">Tasks</span>
+          <span class="crumb-separator">/</span>
+          <span class="crumb-active">{{ editingTaskId() ? 'Edit Task' : 'Create Task' }}</span>
+        </div>
+
+        <h2 class="form-title mt-xs">
+          {{ editingTaskId() ? 'Edit Task: ' + editingTaskName() : 'Create New Task' }}
+        </h2>
+
+        <form [formGroup]="taskForm" (ngSubmit)="onFormSubmit()" class="mt-lg">
+          <div class="grid-form">
+            <div class="form-field">
+              <label class="required" for="name">Task Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name" 
+                placeholder="e.g. Morning Journey"
+              />
+              @if (showErrors() && taskForm.get('name')?.hasError('required')) {
+                <div class="error-text">Task name is required</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="points">Points</label>
+              <input 
+                type="number" 
+                id="points" 
+                formControlName="points" 
+                placeholder="e.g. 50"
+              />
+              @if (showErrors() && taskForm.get('points')?.hasError('required')) {
+                <div class="error-text">Points are required</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="steps">Target Steps</label>
+              <div class="numeric-stepper">
+                <button type="button" class="stepper-btn" (click)="stepSteps(-50)">&minus;</button>
+                <input 
+                  type="number" 
+                  id="steps" 
+                  formControlName="steps" 
+                  placeholder="Minimum 1"
+                />
+                <button type="button" class="stepper-btn" (click)="stepSteps(50)">+</button>
+              </div>
+              @if (showErrors() && taskForm.get('steps')?.hasError('required')) {
+                <div class="error-text">Target steps is required</div>
+              }
+              @if (showErrors() && taskForm.get('steps')?.hasError('min')) {
+                <div class="error-text">Steps must be greater than 0</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Task Status</label>
+              <div class="toggle-switch-wrapper">
+                <label class="switch">
+                  <input type="checkbox" formControlName="isActive" />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-status-label" [ngClass]="{'active': taskForm.get('isActive')?.value}">
+                  {{ taskForm.get('isActive')?.value ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="form-field full-width">
+              <label for="description">Description</label>
+              <textarea 
+                id="description" 
+                formControlName="description" 
+                rows="3" 
+                placeholder="Describe what users need to complete..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Required Sensor Tags -->
+          <div class="tags-picker-section mt-md">
+            <label class="required-label">Required Sensor Tags *</label>
+            <div class="sensor-tags-grid mt-sm">
+              @for (tag of sensorTags; track tag) {
+                <button 
+                  type="button" 
+                  class="sensor-tag-btn" 
+                  [ngClass]="{'selected': isTagSelected(tag)}"
+                  (click)="toggleTag(tag)"
+                >
+                  {{ tag }}
+                </button>
+              }
+            </div>
+            @if (showErrors() && selectedTags().length === 0) {
+              <div class="error-text">Select at least one sensor tag</div>
+            }
+          </div>
+
+          <!-- Form Actions Footer -->
+          <div class="form-actions mt-xl">
+            @if (editingTaskId()) {
+              <button type="button" class="btn btn-danger btn-secondary delete-btn-left" (click)="onDelete(editingTaskId()!)">
+                <svg lucideIcon="trash-2" size="14"></svg>
+                Delete Task
+              </button>
+            }
+            
+            <div class="right-actions ml-auto">
+              <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary">
+                {{ editingTaskId() ? 'Save Changes' : 'Create Task' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    } @else {
+      <!-- Admin List View -->
+      <div class="admin-header-row flex-between mb-lg">
+        <div>
+          <h1>Tasks</h1>
+          <p class="subtitle text-secondary">Manage training tasks and assign to users</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateForm()">
+          <svg lucideIcon="plus" size="16"></svg>
+          Create Task
+        </button>
+      </div>
+
+      <!-- Search + Filter bar molecule -->
+      <div class="search-filter-molecule card mb-lg">
+        <div class="search-wrapper">
+          <svg lucideIcon="search" class="search-icon" size="18"></svg>
+          <input 
+            type="text" 
+            placeholder="Search tasks..." 
+            [value]="searchText()"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+        
+        <div class="filter-btn-group">
+          <button 
+            class="filter-tab" 
+            [ngClass]="{'active': statusFilter() === 'all'}"
+            (click)="setStatusFilter('all')"
+          >All</button>
+          <button 
+            class="filter-tab" 
+            [ngClass]="{'active': statusFilter() === 'active'}"
+            (click)="setStatusFilter('active')"
+          >Active</button>
+          <button 
+            class="filter-tab" 
+            [ngClass]="{'active': statusFilter() === 'inactive'}"
+            (click)="setStatusFilter('inactive')"
+          >Inactive</button>
+        </div>
+
+        <div class="tag-filter-dropdown">
+          <select (change)="onTagFilterChange($event)">
+            <option value="">Filter by Tags</option>
+            @for (tag of sensorTags; track tag) {
+              <option [value]="tag">{{ tag }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="results-count ml-auto">
+          {{ filteredTasks().length }} results
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="card table-card overflow-x">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Task Name</th>
+              <th>Description</th>
+              <th>Required Tags</th>
+              <th>Steps</th>
+              <th>Points</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (task of paginatedTasks(); track task.id) {
+              <tr>
+                <td class="id-col">{{ task.id }}</td>
+                <td class="font-bold">{{ task.name }}</td>
+                <td class="desc-col">{{ task.description }}</td>
+                <td>
+                  <div class="tags-row">
+                    @for (tag of task.requiredTags; track tag) {
+                      <span class="tag-badge">{{ tag }}</span>
+                    }
+                  </div>
+                </td>
+                <td>{{ task.steps | number }}</td>
+                <td class="points-col">{{ task.points }}</td>
+                <td>
+                  <span class="chip" [ngClass]="task.status === 'Active' ? 'active' : 'closed'">
+                    {{ task.status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-icon-btn edit" (click)="openEditForm(task)" aria-label="Edit task">
+                      <svg lucideIcon="edit-2" size="14"></svg>
+                    </button>
+                    <button class="action-icon-btn delete" (click)="onDelete(task.id)" aria-label="Delete task">
+                      <svg lucideIcon="trash-2" size="14"></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="text-center py-xl">
+                  <div class="empty-state">
+                    <svg lucideIcon="alert-triangle" size="32" class="text-secondary"></svg>
+                    <p class="mt-sm font-bold">No tasks found matching criteria</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      @if (filteredTasks().length > 0) {
+        <div class="pagination-footer mt-md">
+          <span class="page-info">
+            Showing {{ (currentPage() - 1) * pageSize() + 1 }} - 
+            {{ Math.min(currentPage() * pageSize(), filteredTasks().length) }} 
+            of {{ filteredTasks().length }} tasks
+          </span>
+          
+          <div class="pagination-controls ml-auto">
+            <span class="rows-label">Rows per page:</span>
+            <select class="rows-select" [value]="pageSize()" (change)="onPageSizeChange($event)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+
+            <div class="pages-list flex-gap-sm ml-md">
+              @for (p of pagesArray(); track p) {
+                <button 
+                  class="page-num-btn" 
+                  [ngClass]="{'active': p === currentPage()}"
+                  (click)="setCurrentPage(p)"
+                >
+                  {{ p }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  } @else {
+    <!-- USER VIEW -->
+    <div class="user-header">
+      <h1>My Tasks</h1>
+      <p class="subtitle text-secondary">Track your progress and earn points</p>
+    </div>
+
+    <!-- Blue Stat capsule ribbon -->
+    <div class="user-stats-ribbon mt-md mb-lg">
+      <div class="stat-capsule">
+        <span class="num">4</span>
+        <span class="lbl">Active Tasks</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-capsule">
+        <span class="num">2</span>
+        <span class="lbl">Completed</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-capsule">
+        <span class="num">350</span>
+        <span class="lbl">Total Points Earned</span>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="search-filter-molecule card mb-lg">
+      <div class="search-wrapper">
+        <svg lucideIcon="search" class="search-icon" size="18"></svg>
+        <input 
+          type="text" 
+          placeholder="Search tasks..." 
+          [value]="searchText()"
+          (input)="onSearchInput($event)"
+        />
+      </div>
+      
+      <div class="filter-btn-group">
+        <button 
+          class="filter-tab" 
+          [ngClass]="{'active': statusFilter() === 'all'}"
+          (click)="setStatusFilter('all')"
+        >All</button>
+        <button 
+          class="filter-tab" 
+          [ngClass]="{'active': statusFilter() === 'active'}"
+          (click)="setStatusFilter('active')"
+        >Active</button>
+        <button 
+          class="filter-tab" 
+          [ngClass]="{'active': statusFilter() === 'completed'}"
+          (click)="setStatusFilter('completed')"
+        >Completed</button>
+      </div>
+    </div>
+
+    <!-- User Cards Grid layout -->
+    <div class="tasks-grid">
+      @for (task of userFilteredTasks(); track task.id) {
+        <div class="task-card card blue-accent-top">
+          <div class="task-card-header">
+            <h3>{{ task.name }}</h3>
+            <span class="chip" [ngClass]="task.status === 'Active' ? 'active' : 'closed'">
+              {{ task.status }}
+            </span>
+          </div>
+          <div class="task-tags-row mt-xs">
+            @for (tag of task.requiredTags; track tag) {
+              <span class="tag-badge">{{ tag }}</span>
+            }
+          </div>
+          
+          <!-- Progress segment -->
+          <div class="task-progress-box mt-lg">
+            <div class="progress-nums flex-between">
+              <span class="steps-progress">{{ getUserProgressSteps(task.id, task.steps) }} steps</span>
+              <span class="points-val font-bold">{{ task.points }} pts</span>
+            </div>
+            
+            <div class="progress-bar-track mt-xs">
+              <div class="progress-bar-fill" [style.width.%]="getUserProgressPercent(task.id)"></div>
+            </div>
+            
+            <div class="progress-percent-text mt-xs flex-between">
+              <span>{{ getUserProgressPercent(task.id) }}% complete</span>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="card w-full text-center py-xl col-span-3">
+          <svg lucideIcon="alert-triangle" size="48" class="text-secondary"></svg>
+          <p class="mt-md font-bold text-secondary">No tasks found matching criteria</p>
+        </div>
+      }
+    </div>
+  }
+</div>

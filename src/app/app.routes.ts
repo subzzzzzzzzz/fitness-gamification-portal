@@ -5,11 +5,11 @@ import { roleGuard } from './core/guards/role.guard';
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/auth-split').then(m => m.AuthSplitComponent)
+    loadComponent: () => import('./features/auth/auth-split.component').then(m => m.AuthSplitComponent)
   },
   {
     path: 'register',
-    loadComponent: () => import('./features/auth/auth-split').then(m => m.AuthSplitComponent)
+    loadComponent: () => import('./features/auth/auth-split.component').then(m => m.AuthSplitComponent)
   },
   {
     path: '',
@@ -19,49 +19,49 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard').then(m => m.DashboardComponent)
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
         path: 'tasks',
-        loadComponent: () => import('./features/tasks/tasks').then(m => m.TasksComponent)
+        loadComponent: () => import('./features/tasks/tasks.component').then(m => m.TasksComponent)
       },
       {
         path: 'challenges',
-        loadComponent: () => import('./features/challenges/challenges').then(m => m.ChallengesComponent)
+        loadComponent: () => import('./features/challenges/challenges.component').then(m => m.ChallengesComponent)
       },
       {
         path: 'activity',
-        loadComponent: () => import('./features/telemetry/activity').then(m => m.ActivityComponent)
+        loadComponent: () => import('./features/telemetry/activity.component').then(m => m.ActivityComponent)
       },
       {
         path: 'leaderboard',
-        loadComponent: () => import('./features/leaderboard/leaderboard').then(m => m.LeaderboardComponent)
+        loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent)
       },
       {
         path: 'profile',
-        loadComponent: () => import('./features/profile/profile').then(m => m.ProfileComponent)
+        loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
       },
       {
         path: 'admin/tasks',
-        loadComponent: () => import('./features/tasks/tasks').then(m => m.TasksComponent),
+        loadComponent: () => import('./features/tasks/tasks.component').then(m => m.TasksComponent),
         canActivate: [roleGuard],
         data: { role: 'ROLE_ADMIN' }
       },
       {
         path: 'admin/challenges',
-        loadComponent: () => import('./features/challenges/challenges').then(m => m.ChallengesComponent),
+        loadComponent: () => import('./features/challenges/challenges.component').then(m => m.ChallengesComponent),
         canActivate: [roleGuard],
         data: { role: 'ROLE_ADMIN' }
       },
       {
         path: 'admin/devices',
-        loadComponent: () => import('./features/devices/devices').then(m => m.DevicesComponent),
+        loadComponent: () => import('./features/devices/devices.component').then(m => m.DevicesComponent),
         canActivate: [roleGuard],
         data: { role: 'ROLE_ADMIN' }
       },
       {
         path: 'admin/users',
-        loadComponent: () => import('./features/users/users').then(m => m.UsersComponent),
+        loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent),
         canActivate: [roleGuard],
         data: { role: 'ROLE_ADMIN' }
       }

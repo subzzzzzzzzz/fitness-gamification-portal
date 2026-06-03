@@ -1,0 +1,128 @@
+<div class="users-directory-container">
+  
+  <!-- Header Row -->
+  <div class="admin-header-row mb-lg">
+    <h1>Users</h1>
+    <p class="subtitle text-secondary">
+      All registered users &bull; UserProgressResponse merged &bull; {{ allUsers().length }} total
+    </p>
+  </div>
+
+  <!-- Search + Filter bar -->
+  <div class="search-filter-molecule card mb-lg">
+    <div class="search-wrapper">
+      <svg lucideIcon="search" class="search-icon" size="18"></svg>
+      <input 
+        type="text" 
+        placeholder="Search users..." 
+        [value]="searchText()"
+        (input)="onSearchInput($event)"
+      />
+    </div>
+    
+    <div class="filter-btn-group">
+      <button 
+        class="filter-tab" 
+        [ngClass]="{'active': regionFilter() === 'all'}"
+        (click)="setRegionFilter('all')"
+      >All</button>
+      <button 
+        class="filter-tab" 
+        [ngClass]="{'active': regionFilter() === 'APAC'}"
+        (click)="setRegionFilter('APAC')"
+      >APAC</button>
+      <button 
+        class="filter-tab" 
+        [ngClass]="{'active': regionFilter() === 'EMEA'}"
+        (click)="setRegionFilter('EMEA')"
+      >EMEA</button>
+      <button 
+        class="filter-tab" 
+        [ngClass]="{'active': regionFilter() === 'AMER'}"
+        (click)="setRegionFilter('AMER')"
+      >AMER</button>
+    </div>
+
+    <div class="results-count ml-auto">
+      {{ sortedFilteredUsers().length }} users
+    </div>
+  </div>
+
+  <!-- Users list data table -->
+  <div class="card table-card overflow-x">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Region</th>
+          <th>Points</th>
+          <th style="width: 80px;">Rank</th>
+          <th>Badges</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of sortedFilteredUsers(); track user.id) {
+          <tr>
+            <td class="id-col">{{ user.id }}</td>
+            <td>
+              <div class="user-identity">
+                <!-- Colored initials avatar -->
+                <div class="user-avatar" [style.background-color]="getAvatarBgColor(user.id)">
+                  {{ getInitials(user.name) }}
+                </div>
+                <span class="font-bold">{{ user.name }}</span>
+              </div>
+            </td>
+            <td class="email-col">{{ user.email }}</td>
+            <td>
+              <span class="region-chip">{{ user.region || 'APAC' }}</span>
+            </td>
+            <td>
+              <!-- Points mini bar progress visual -->
+              <div class="points-progress-wrapper">
+                <span class="points-text font-bold">{{ user.points | number }}</span>
+                <div class="points-bar-track">
+                  <div class="points-bar-fill" [style.width.%]="getPointsPercentage(user.points)"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <app-rank-badge [rank]="getUserRank(user.id)"></app-rank-badge>
+            </td>
+            <td>
+              <!-- Stars badges row -->
+              <div class="stars-row">
+                @for (star of getStarsArray(user.points); track star) {
+                  <svg lucideIcon="star" class="star-gold" size="12"></svg>
+                }
+              </div>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-icon-btn view" (click)="onView(user)" aria-label="View user profile">
+                  <svg lucideIcon="eye" size="14"></svg>
+                </button>
+                <button class="action-icon-btn edit" (click)="onEdit(user)" aria-label="Edit user details">
+                  <svg lucideIcon="edit-2" size="14"></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="text-center py-xl">
+              <div class="empty-state">
+                <svg lucideIcon="alert-triangle" size="32" class="text-secondary"></svg>
+                <p class="mt-sm font-bold">No users registered in this region</p>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>

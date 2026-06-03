@@ -1,0 +1,407 @@
+<div class="challenges-container">
+  
+  <!-- ADMIN VIEW -->
+  @if (isAdmin()) {
+    @if (isFormOpen()) {
+      <!-- Create / Edit Form -->
+      <div class="form-card card">
+        <div class="form-breadcrumbs">
+          <span class="crumb-link" (click)="closeForm()">Challenges</span>
+          <span class="crumb-separator">/</span>
+          <span class="crumb-active">{{ editingChallengeId() ? 'Edit Challenge' : 'Create Challenge' }}</span>
+        </div>
+
+        <h2 class="form-title mt-xs">
+          {{ editingChallengeId() ? 'Edit Challenge: ' + editingChallengeName() : 'Create New Challenge' }}
+        </h2>
+
+        <form [formGroup]="challengeForm" (ngSubmit)="onFormSubmit()" class="mt-lg">
+          <div class="grid-form">
+            <div class="form-field">
+              <label class="required" for="name">Challenge Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name" 
+                placeholder="e.g. Morning Sprint Challenge"
+              />
+              @if (showErrors() && challengeForm.get('name')?.hasError('required')) {
+                <div class="error-text">Challenge name is required</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="taskId">Linked Task</label>
+              <select id="taskId" formControlName="taskId">
+                <option value="">Select a task...</option>
+                @for (task of activeTasks(); track task.id) {
+                  <option [value]="task.id">{{ task.name }} (ID: {{ task.id }})</option>
+                }
+              </select>
+              @if (showErrors() && challengeForm.get('taskId')?.hasError('required')) {
+                <div class="error-text">Please link a task</div>
+              }
+            </div>
+
+            <!-- Custom Scope selector visually matching Figma radio layout -->
+            <div class="form-field full-width">
+              <label class="required">Scope</label>
+              <div class="scope-radio-group">
+                <label class="scope-radio-btn" [ngClass]="{'selected': scopeVal() === 'GLOBAL'}">
+                  <input type="radio" value="GLOBAL" formControlName="scope" (change)="onScopeChange('GLOBAL')" />
+                  <span class="scope-label global">GLOBAL</span>
+                </label>
+
+                <label class="scope-radio-btn" [ngClass]="{'selected': scopeVal() === 'REGIONAL'}">
+                  <input type="radio" value="REGIONAL" formControlName="scope" (change)="onScopeChange('REGIONAL')" />
+                  <span class="scope-label regional">REGIONAL</span>
+                </label>
+
+                <label class="scope-radio-btn" [ngClass]="{'selected': scopeVal() === 'FRIENDLY'}">
+                  <input type="radio" value="FRIENDLY" formControlName="scope" (change)="onScopeChange('FRIENDLY')" />
+                  <span class="scope-label friendly">FRIENDLY</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label [ngClass]="{'required': scopeVal() === 'REGIONAL'}" for="region">Region</label>
+              <input 
+                type="text" 
+                id="region" 
+                formControlName="region" 
+                placeholder="e.g. APAC, EMEA, AMER"
+              />
+              @if (showErrors() && scopeVal() === 'REGIONAL' && challengeForm.get('region')?.hasError('required')) {
+                <div class="error-text">Region is required for REGIONAL scope</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label>Status</label>
+              <select formControlName="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="CLOSED">CLOSED</option>
+              </select>
+            </div>
+
+            <div class="form-field full-width">
+              <label for="description">Description</label>
+              <textarea 
+                id="description" 
+                formControlName="description" 
+                rows="3" 
+                placeholder="Brief description of the challenge..."
+              ></textarea>
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="startAt">Start Date & Time</label>
+              <div class="date-input-wrapper">
+                <input 
+                  type="datetime-local" 
+                  id="startAt" 
+                  formControlName="startAt"
+                />
+              </div>
+              @if (showErrors() && challengeForm.get('startAt')?.hasError('required')) {
+                <div class="error-text">Start date is required</div>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="required" for="endAt">End Date & Time</label>
+              <div class="date-input-wrapper">
+                <input 
+                  type="datetime-local" 
+                  id="endAt" 
+                  formControlName="endAt"
+                />
+              </div>
+              @if (showErrors() && challengeForm.get('endAt')?.hasError('required')) {
+                <div class="error-text">End date is required</div>
+              }
+            </div>
+          </div>
+
+          <!-- Warning helpful tip block -->
+          <div class="helper-note-card mt-md">
+            <svg lucideIcon="alert-triangle" size="16" class="note-icon"></svg>
+            <p class="note-text">
+              <strong>Note:</strong> End Date must be after Start Date. Scope REGIONAL requires a Region value. 
+              Task must have status Active. Only tasks compatible with at least one registered device will appear in the dropdown.
+            </p>
+          </div>
+
+          <!-- Form Actions Footer -->
+          <div class="form-actions mt-xl">
+            @if (editingChallengeId()) {
+              <button type="button" class="btn btn-danger btn-secondary delete-btn-left" (click)="onDelete(editingChallengeId()!)">
+                <svg lucideIcon="trash-2" size="14"></svg>
+                Delete Challenge
+              </button>
+            }
+            
+            <div class="right-actions ml-auto">
+              <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary">
+                {{ editingChallengeId() ? 'Save Changes' : 'Create Challenge' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    } @else {
+      <!-- Admin List View -->
+      <div class="admin-header-row flex-between mb-lg">
+        <div>
+          <h1>Challenges</h1>
+          <p class="subtitle text-secondary">Create and manage fitness challenges for participants</p>
+        </div>
+        <button class="btn btn-primary" (click)="openCreateForm()">
+          <svg lucideIcon="plus" size="16"></svg>
+          Create Challenge
+        </button>
+      </div>
+
+      <!-- Search + Filter Bar -->
+      <div class="search-filter-molecule card mb-lg">
+        <div class="search-wrapper">
+          <svg lucideIcon="search" class="search-icon" size="18"></svg>
+          <input 
+            type="text" 
+            placeholder="Search challenges..." 
+            [value]="searchText()"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+        
+        <div class="filter-btn-group">
+          <button 
+            class="filter-tab" 
+            [ngClass]="{'active': statusFilter() === 'all'}"
+            (click)="setStatusFilter('all')"
+          >All</button>
+          <button 
+            class="filter-tab" 
+            [ngClass]="{'active': statusFilter() === 'active'}"
+            (click)="setStatusFilter('active')"
+          >Active</button>
+          <button 
+            class="filter-tab" 
+            [ngClass]="{'active': statusFilter() === 'closed'}"
+            (click)="setStatusFilter('closed')"
+          >Closed</button>
+        </div>
+
+        <!-- Scope filter badges -->
+        <div class="scope-filters flex-gap-sm ml-md">
+          <button 
+            class="scope-filter-pill global" 
+            [ngClass]="{'active': scopeFilter() === 'GLOBAL'}"
+            (click)="toggleScopeFilter('GLOBAL')"
+          >GLOBAL</button>
+          <button 
+            class="scope-filter-pill regional" 
+            [ngClass]="{'active': scopeFilter() === 'REGIONAL'}"
+            (click)="toggleScopeFilter('REGIONAL')"
+          >REGIONAL</button>
+          <button 
+            class="scope-filter-pill friendly" 
+            [ngClass]="{'active': scopeFilter() === 'FRIENDLY'}"
+            (click)="toggleScopeFilter('FRIENDLY')"
+          >FRIENDLY</button>
+        </div>
+
+        <div class="results-count ml-auto">
+          {{ filteredChallenges().length }} challenges
+        </div>
+      </div>
+
+      <!-- Challenges Data Table -->
+      <div class="card table-card overflow-x">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Scope</th>
+              <th>Status</th>
+              <th>Task</th>
+              <th>Region</th>
+              <th>End Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (challenge of paginatedChallenges(); track challenge.id) {
+              <tr>
+                <td class="id-col">{{ challenge.id }}</td>
+                <td class="font-bold">{{ challenge.name }}</td>
+                <td class="desc-col">{{ challenge.description }}</td>
+                <td>
+                  <span class="scope-badge" [ngClass]="challenge.scope | lowercase">{{ challenge.scope }}</span>
+                </td>
+                <td>
+                  <span class="chip" [ngClass]="challenge.status === 'ACTIVE' ? 'active' : 'closed'">
+                    {{ challenge.status }}
+                  </span>
+                </td>
+                <td>#{{ challenge.taskId }}</td>
+                <td>{{ challenge.region || '&mdash;' }}</td>
+                <td>{{ challenge.endAt | date:'dd MMM yyyy' }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-icon-btn edit" (click)="openEditForm(challenge)" aria-label="Edit challenge">
+                      <svg lucideIcon="edit-2" size="14"></svg>
+                    </button>
+                    <button class="action-icon-btn delete" (click)="onDelete(challenge.id)" aria-label="Delete challenge">
+                      <svg lucideIcon="trash-2" size="14"></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="text-center py-xl">
+                  <div class="empty-state">
+                    <svg lucideIcon="alert-triangle" size="32" class="text-secondary"></svg>
+                    <p class="mt-sm font-bold">No challenges found matching criteria</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination numbers -->
+      @if (filteredChallenges().length > 0) {
+        <div class="pagination-footer mt-md">
+          <span class="page-info">
+            Showing {{ (currentPage() - 1) * pageSize() + 1 }} - 
+            {{ Math.min(currentPage() * pageSize(), filteredChallenges().length) }} 
+            of {{ filteredChallenges().length }} challenges
+          </span>
+          
+          <div class="pagination-controls ml-auto">
+            <div class="pages-list flex-gap-sm">
+              @for (p of pagesArray(); track p) {
+                <button 
+                  class="page-num-btn" 
+                  [ngClass]="{'active': p === currentPage()}"
+                  (click)="setCurrentPage(p)"
+                >
+                  {{ p }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  } @else {
+    <!-- USER VIEW -->
+    <div class="user-header">
+      <h1>Challenges</h1>
+      <p class="subtitle text-secondary">Join challenges and push your limits with the community</p>
+    </div>
+
+    <!-- Blue Stat ribbon -->
+    <div class="user-stats-ribbon mt-md mb-lg">
+      <div class="stat-capsule">
+        <span class="num">3</span>
+        <span class="lbl">Active Challenges</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-capsule">
+        <span class="num">{{ userJoinedCount() }}</span>
+        <span class="lbl">Joined</span>
+      </div>
+    </div>
+
+    <!-- Search + Filter Bar -->
+    <div class="search-filter-molecule card mb-lg">
+      <div class="search-wrapper">
+        <svg lucideIcon="search" class="search-icon" size="18"></svg>
+        <input 
+          type="text" 
+          placeholder="Search challenges..." 
+          [value]="searchText()"
+          (input)="onSearchInput($event)"
+        />
+      </div>
+      
+      <div class="filter-btn-group">
+        <button 
+          class="filter-tab" 
+          [ngClass]="{'active': statusFilter() === 'all'}"
+          (click)="setStatusFilter('all')"
+        >All</button>
+        <button 
+          class="filter-tab" 
+          [ngClass]="{'active': statusFilter() === 'active'}"
+          (click)="setStatusFilter('active')"
+        >Active</button>
+        <button 
+          class="filter-tab" 
+          [ngClass]="{'active': statusFilter() === 'joined'}"
+          (click)="setStatusFilter('joined')"
+        >Joined</button>
+      </div>
+    </div>
+
+    <!-- User Cards Grid layout -->
+    <div class="challenges-grid">
+      @for (c of userFilteredChallenges(); track c.id) {
+        <div class="challenge-card card scope-accent-top" [ngClass]="c.scope | lowercase">
+          <div class="challenge-card-header">
+            <h3>{{ c.name }}</h3>
+            <span class="chip" [ngClass]="c.status === 'ACTIVE' ? 'active' : 'closed'">
+              {{ c.status }}
+            </span>
+          </div>
+          
+          <div class="challenge-tags mt-xs">
+            <span class="scope-badge" [ngClass]="c.scope | lowercase">{{ c.scope }}</span>
+            @if (c.region) {
+              <span class="region-lbl">{{ c.region }}</span>
+            }
+          </div>
+
+          <p class="challenge-description-text mt-md">{{ c.description }}</p>
+          
+          <div class="challenge-meta-row mt-lg flex-between">
+            <span class="ends-date">Ends {{ c.endAt | date:'dd MMM yyyy' }}</span>
+            @if (isJoined(c)) {
+              <span class="joined-rank-label">Rank #{{ c.id === 1 ? '2' : '3' }}</span>
+            }
+          </div>
+
+          <!-- Footer CTA section -->
+          <div class="card-footer-cta mt-md flex-between">
+            <!-- Expiry chip -->
+            <span class="expiry-countdown-chip" [ngClass]="{'active': c.status === 'ACTIVE', 'closed': c.status === 'CLOSED'}">
+              {{ getChallengeExpiryText(c) }}
+            </span>
+
+            <!-- Action button -->
+            @if (c.status === 'CLOSED') {
+              <button class="btn btn-secondary" disabled>Closed</button>
+            } @else if (isJoined(c)) {
+              <button class="btn btn-secondary" disabled>Joined</button>
+            } @else {
+              <button class="btn btn-primary" (click)="onJoinChallenge(c)">Join</button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="card w-full text-center py-xl col-span-3">
+          <svg lucideIcon="alert-triangle" size="48" class="text-secondary"></svg>
+          <p class="mt-md font-bold text-secondary">No challenges found matching criteria</p>
+        </div>
+      }
+    </div>
+  }
+</div>

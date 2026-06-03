@@ -1,0 +1,276 @@
+<div class="profile-container">
+  
+  <!-- USER PROFILE VIEW -->
+  @if (!isAdmin()) {
+    <div class="profile-header-row flex-between mb-lg">
+      <div>
+        <h1>My Profile</h1>
+        <p class="subtitle text-secondary">GET /user/{{ userId() }} &bull; UserProgressResponse</p>
+      </div>
+      <button class="btn btn-secondary" (click)="editProfile()">
+        <svg lucideIcon="user" size="16"></svg>
+        Edit Profile
+      </button>
+    </div>
+
+    <div class="profile-grid">
+      
+      <!-- Left Column Card -->
+      <div class="left-col">
+        <div class="card center-content">
+          <div class="large-avatar-circle">
+            {{ userInitials() }}
+          </div>
+          
+          <h2 class="mt-md mb-xs">{{ userName() }}</h2>
+          <span class="email-sub text-secondary">{{ userEmail() }}</span>
+          
+          <span class="region-chip mt-md">Region: {{ userRegion() }}</span>
+
+          <div class="profile-stats-divider mt-lg mb-lg"></div>
+
+          <div class="profile-stats-list w-full">
+            <div class="stat-row flex-between">
+              <span class="label text-secondary">Total Points</span>
+              <span class="val font-bold primary-text">{{ userPoints() | number }}</span>
+            </div>
+            <div class="stat-row flex-between mt-sm">
+              <span class="label text-secondary">Global Rank</span>
+              <span class="val font-bold warning-text">#13</span>
+            </div>
+            <div class="stat-row flex-between mt-sm">
+              <span class="label text-secondary">Activities Logged</span>
+              <span class="val font-bold">30</span>
+            </div>
+            <div class="stat-row flex-between mt-sm">
+              <span class="label text-secondary">Badges Earned</span>
+              <span class="val font-bold text-success">{{ earnedBadges().length }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column Details -->
+      <div class="right-col">
+        <!-- Card 1: Profile Information -->
+        <div class="card">
+          <h3 class="subsection-title mb-lg">Profile Information</h3>
+          
+          <div class="read-only-form">
+            <div class="form-field-view">
+              <span class="lbl">Full Name</span>
+              <span class="val">{{ userName() }}</span>
+            </div>
+            <div class="form-field-view">
+              <span class="lbl">Email</span>
+              <span class="val">{{ userEmail() }}</span>
+            </div>
+            <div class="form-field-view">
+              <span class="lbl">Phone</span>
+              <span class="val">{{ userPhone() }}</span>
+            </div>
+            <div class="form-field-view">
+              <span class="lbl">City</span>
+              <span class="val">{{ userCity() }}</span>
+            </div>
+            <div class="form-field-view full-width">
+              <span class="lbl">Region</span>
+              <span class="val">{{ userRegion() }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: My Rewards & Badges -->
+        <div class="card mt-lg">
+          <h3 class="subsection-title mb-lg">My Rewards & Badges</h3>
+          
+          <div class="badges-catalog-list">
+            @for (badge of earnedBadges(); track badge.id) {
+              <div class="badge-item-row" [ngClass]="getBadgeClass(badge.name)">
+                <div class="badge-icon-capsule">
+                  <svg lucideIcon="star" size="14"></svg>
+                </div>
+                <div class="badge-details">
+                  <div class="name font-bold">{{ badge.name }}</div>
+                  <div class="desc text-secondary">{{ badge.description }}</div>
+                </div>
+              </div>
+            }
+
+            <!-- Locked items -->
+            <div class="badge-item-row locked">
+              <div class="badge-icon-capsule">
+                <svg lucideIcon="star" size="14"></svg>
+              </div>
+              <div class="badge-details">
+                <div class="name font-bold">Goal-Getter <span class="lock-lbl">(locked)</span></div>
+                <div class="desc text-secondary">Hit 10,000-step goal 10 days/month</div>
+              </div>
+            </div>
+
+            <div class="badge-item-row locked">
+              <div class="badge-icon-capsule">
+                <svg lucideIcon="star" size="14"></svg>
+              </div>
+              <div class="badge-details">
+                <div class="name font-bold">Night Owl <span class="lock-lbl">(locked)</span></div>
+                <div class="desc text-secondary">Log activity after 9 PM, 5 times</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  } @else {
+    <!-- ADMIN PROFILE VIEW (Figma Page 40) -->
+    <div class="profile-header-row flex-between mb-lg">
+      <div>
+        <h1>Admin Profile & Platform Controls</h1>
+        <p class="subtitle text-secondary">GET /rank &bull; GET /game &bull; Trigger ranking and gamification jobs</p>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <!-- Left Column: Admin Details -->
+      <div class="left-col">
+        <div class="card center-content">
+          <div class="large-avatar-circle admin-theme">
+            {{ userInitials() }}
+          </div>
+          
+          <span class="role-badge-capsule mt-md">ADMIN</span>
+          
+          <h2 class="mt-sm mb-xs">{{ userName() }}</h2>
+          <span class="email-sub text-secondary">{{ userEmail() }}</span>
+
+          <div class="profile-stats-divider mt-lg mb-lg"></div>
+
+          <div class="profile-stats-list w-full">
+            <div class="stat-row flex-between">
+              <span class="label text-secondary">Role</span>
+              <span class="val font-bold">Administrator</span>
+            </div>
+            <div class="stat-row flex-between mt-sm">
+              <span class="label text-secondary">Platform</span>
+              <span class="val font-bold primary-text">Smartwatch LB</span>
+            </div>
+            <div class="stat-row flex-between mt-sm">
+              <span class="label text-secondary">Users Managed</span>
+              <span class="val font-bold">20</span>
+            </div>
+            <div class="stat-row flex-between mt-sm">
+              <span class="label text-secondary">Active Challenges</span>
+              <span class="val font-bold">3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Jobs & Catalog -->
+      <div class="right-col">
+        <!-- Job Controls -->
+        <div class="card">
+          <h3 class="subsection-title mb-lg">Platform Job Controls</h3>
+          
+          <div class="jobs-list">
+            <!-- Job 1 -->
+            <div class="job-item-card">
+              <div class="job-info">
+                <h4 class="font-bold flex-gap-sm">
+                  <span class="job-dot blue-dot"></span>
+                  Ranking Calculation Job
+                </h4>
+                <p class="job-desc text-secondary">
+                  <code>GET /rank</code> &bull; Recalculates user rankings from all activity data
+                </p>
+                <p class="job-metadata mt-xs">
+                  Last run: 27 May 2026, 10:00 AM &bull; Status: <span class="text-success font-bold">&check; Success</span> &bull; 20 records updated
+                </p>
+              </div>
+              <button 
+                class="btn btn-primary" 
+                (click)="triggerRankJob()" 
+                [disabled]="jobRunning()"
+              >
+                <svg lucideIcon="play" size="14"></svg>
+                Trigger Now
+              </button>
+            </div>
+
+            <!-- Job 2 -->
+            <div class="job-item-card mt-md">
+              <div class="job-info">
+                <h4 class="font-bold flex-gap-sm">
+                  <span class="job-dot purple-dot"></span>
+                  Gamification & Badging Job
+                </h4>
+                <p class="job-desc text-secondary">
+                  <code>GET /game</code> &bull; Evaluates badge criteria and awards rewards
+                </p>
+                <p class="job-metadata mt-xs">
+                  Last run: 27 May 2026, 09:55 AM &bull; Status: <span class="text-success font-bold">&check; Success</span> &bull; 12 badges awarded
+                </p>
+              </div>
+              <button 
+                class="btn btn-primary purple-btn" 
+                (click)="triggerGameJob()" 
+                [disabled]="jobRunning()"
+              >
+                <svg lucideIcon="sparkles" size="14"></svg>
+                Trigger Now
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badge Catalog -->
+        <div class="card mt-lg">
+          <h3 class="subsection-title mb-lg">Badge Catalog</h3>
+          
+          <div class="badges-catalog-list">
+            <div class="badge-item-row early-bird">
+              <div class="badge-icon-capsule"><svg lucideIcon="star" size="14"></svg></div>
+              <div class="badge-details">
+                <div class="name font-bold">Early Bird</div>
+                <div class="desc text-secondary">&mdash; Log 5 activities before 9 AM</div>
+              </div>
+            </div>
+
+            <div class="badge-item-row weekend-warrior">
+              <div class="badge-icon-capsule"><svg lucideIcon="star" size="14"></svg></div>
+              <div class="badge-details">
+                <div class="name font-bold">Weekend Warrior</div>
+                <div class="desc text-secondary">&mdash; Log activity on 3 consecutive weekends</div>
+              </div>
+            </div>
+
+            <div class="badge-item-row consistent-performer">
+              <div class="badge-icon-capsule"><svg lucideIcon="star" size="14"></svg></div>
+              <div class="badge-details">
+                <div class="name font-bold">Consistent Performer</div>
+                <div class="desc text-secondary">&mdash; Log activity 14 consecutive days</div>
+              </div>
+            </div>
+
+            <div class="badge-item-row goal-getter">
+              <div class="badge-icon-capsule"><svg lucideIcon="star" size="14"></svg></div>
+              <div class="badge-details">
+                <div class="name font-bold">Goal-Getter</div>
+                <div class="desc text-secondary">&mdash; Hit 10,000-step goal 10 days/month</div>
+              </div>
+            </div>
+
+            <div class="badge-item-row night-owl">
+              <div class="badge-icon-capsule"><svg lucideIcon="star" size="14"></svg></div>
+              <div class="badge-details">
+                <div class="name font-bold">Night Owl</div>
+                <div class="desc text-secondary">&mdash; Log activity after 9 PM, 5 times</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

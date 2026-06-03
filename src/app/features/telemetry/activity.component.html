@@ -1,0 +1,366 @@
+<div class="activity-container">
+  
+  @if (isFormOpen()) {
+    <!-- Log Activity Form view (Figma Page 34) -->
+    <div class="form-card card">
+      <div class="form-breadcrumbs">
+        <span class="crumb-link" (click)="closeForm()">My Activity</span>
+        <span class="crumb-separator">/</span>
+        <span class="crumb-active">Log Activity</span>
+      </div>
+
+      <h2 class="form-title mt-xs">Log Today's Activity</h2>
+
+      <div class="split-activity-layout mt-lg">
+        
+        <!-- Left Side: Logger Form -->
+        <div class="logger-form-panel">
+          <form [formGroup]="logForm" (ngSubmit)="onFormSubmit()">
+            <div class="grid-form">
+              <div class="form-field">
+                <label class="required" for="activityDate">Activity Date</label>
+                <input 
+                  type="date" 
+                  id="activityDate" 
+                  formControlName="activityDate"
+                  (change)="updatePreview()"
+                />
+              </div>
+
+              <div class="form-field">
+                <label class="required" for="stepCount">Step Count</label>
+                <div class="numeric-stepper">
+                  <button type="button" class="stepper-btn" (click)="stepSteps(-500)">&minus;</button>
+                  <input 
+                    type="number" 
+                    id="stepCount" 
+                    formControlName="stepCount"
+                    (input)="updatePreview()"
+                  />
+                  <button type="button" class="stepper-btn" (click)="stepSteps(500)">+</button>
+                </div>
+                @if (showErrors() && logForm.get('stepCount')?.hasError('required')) {
+                  <div class="error-text">Step count is required</div>
+                }
+                @if (showErrors() && logForm.get('stepCount')?.hasError('min')) {
+                  <div class="error-text">Steps must be greater than 0</div>
+                }
+              </div>
+            </div>
+
+            <!-- Goal progress bar -->
+            <div class="goal-progress-box mt-md">
+              <div class="flex-between font-bold text-sm">
+                <span>Progress toward 10,000 step goal:</span>
+                <span class="primary-text">{{ goalPercent() }}%</span>
+              </div>
+              <div class="progress-bar-track mt-xs">
+                <div class="progress-bar-fill" [style.width.%]="goalPercent()"></div>
+              </div>
+            </div>
+
+            <!-- Sensor readings section -->
+            <div class="sensor-readings-section mt-xl">
+              <div class="flex-between">
+                <h3 class="subsection-title">Sensor Readings <span class="sub">(tagValues &mdash; optional)</span></h3>
+                <span class="device-assigned-lbl text-secondary font-bold">from {{ deviceName() }}</span>
+              </div>
+              
+              <div class="sensors-inputs-grid mt-sm">
+                <!-- Heart Rate -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Heart Rate</span>
+                    <span class="tag-chip font-bold">HRM</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="hrVal" (input)="updatePreview()" />
+                    <span class="unit">bpm</span>
+                  </div>
+                </div>
+
+                <!-- Steps (mirrors Step Count) -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Steps</span>
+                    <span class="tag-chip font-bold">STEPS</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="stepsVal" readonly />
+                    <span class="unit">steps</span>
+                  </div>
+                </div>
+
+                <!-- Resp. Rate -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Resp. Rate</span>
+                    <span class="tag-chip font-bold">RESPIRATORY_RATE</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="respRateVal" (input)="updatePreview()" />
+                    <span class="unit">brpm</span>
+                  </div>
+                </div>
+
+                <!-- Blood Pressure -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Blood Pressure</span>
+                    <span class="tag-chip font-bold">BLOOD_PRESSURE</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="text" placeholder="e.g. 120/80" formControlName="bpVal" (input)="updatePreview()" />
+                    <span class="unit">mmHg</span>
+                  </div>
+                </div>
+
+                <!-- Stress Score -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Stress Score</span>
+                    <span class="tag-chip font-bold">STRESS</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="stressVal" (input)="updatePreview()" />
+                    <span class="unit">0-100</span>
+                  </div>
+                </div>
+
+                <!-- VO2 Max -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">VO2 Max</span>
+                    <span class="tag-chip font-bold">VO2_MAX</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="vo2MaxVal" (input)="updatePreview()" />
+                    <span class="unit">mL/kg/min</span>
+                  </div>
+                </div>
+
+                <!-- Hydration -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Hydration</span>
+                    <span class="tag-chip font-bold">HYDRATION</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="hydrationVal" (input)="updatePreview()" />
+                    <span class="unit">%</span>
+                  </div>
+                </div>
+
+                <!-- Heart Rate Var -->
+                <div class="sensor-field-wrapper">
+                  <div class="sensor-label-row flex-between">
+                    <span class="sensor-lbl">Heart Rate Var.</span>
+                    <span class="tag-chip font-bold">HRV</span>
+                  </div>
+                  <div class="sensor-input-box">
+                    <input type="number" formControlName="hrvVal" (input)="updatePreview()" />
+                    <span class="unit">ms</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit actions -->
+            <div class="form-actions mt-xl">
+              <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit Activity</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Side: Submission Preview -->
+        <div class="preview-panel">
+          <div class="preview-card card">
+            <h3 class="subsection-title mb-md">Submission Preview</h3>
+            
+            <div class="preview-metric-row">
+              <span class="lbl text-secondary font-bold">Activity Date</span>
+              <span class="val font-bold primary-text">{{ previewDate() | date:'E, dd MMM yyyy' }}</span>
+            </div>
+            
+            <div class="preview-metric-row mt-sm">
+              <span class="lbl text-secondary font-bold">Step Count</span>
+              <span class="val font-bold">{{ previewSteps() | number }} steps</span>
+            </div>
+
+            <div class="preview-metric-row mt-sm">
+              <span class="lbl text-secondary font-bold">Goal Progress</span>
+              <span class="val font-bold text-success">{{ goalPercent() }}% of 10k</span>
+            </div>
+
+            <div class="progress-bar-track mt-md">
+              <div class="progress-bar-fill" [style.width.%]="goalPercent()"></div>
+            </div>
+            <div class="text-xs text-secondary mt-xs">{{ previewSteps() | number }} / 10,000 steps today</div>
+
+            <div class="preview-divider mt-lg mb-lg"></div>
+
+            <div class="preview-device-section">
+              <div class="flex-between">
+                <span class="lbl text-secondary font-bold">Device</span>
+                <span class="val font-bold">{{ deviceName() }}</span>
+              </div>
+              <div class="flex-between mt-xs">
+                <span class="lbl text-secondary font-bold">Manufacturer</span>
+                <span class="val font-bold">{{ deviceManufacturer() }}</span>
+              </div>
+            </div>
+
+            <div class="preview-divider mt-lg mb-lg"></div>
+
+            <h4 class="text-sm font-bold mb-sm">Active Sensor Tags</h4>
+            <div class="sensor-tags-row">
+              @for (tag of deviceTags(); track tag) {
+                <span class="tag-badge">{{ tag }}</span>
+              }
+            </div>
+
+            <div class="preview-divider mt-lg mb-lg"></div>
+
+            <h4 class="text-sm font-bold mb-sm">Sensor Readings Summary</h4>
+            <div class="readings-summary-list">
+              <div class="summary-row flex-between" *ngIf="logForm.get('hrVal')?.value">
+                <span>Heart Rate</span>
+                <span class="font-bold">{{ logForm.get('hrVal')?.value }} bpm</span>
+              </div>
+              <div class="summary-row flex-between" *ngIf="logForm.get('respRateVal')?.value">
+                <span>Resp. Rate</span>
+                <span class="font-bold">{{ logForm.get('respRateVal')?.value }} brpm</span>
+              </div>
+              <div class="summary-row flex-between" *ngIf="logForm.get('bpVal')?.value">
+                <span>Blood Pressure</span>
+                <span class="font-bold">{{ logForm.get('bpVal')?.value }} mmHg</span>
+              </div>
+              <div class="summary-row flex-between" *ngIf="logForm.get('stressVal')?.value">
+                <span>Stress Score</span>
+                <span class="font-bold">{{ logForm.get('stressVal')?.value }}/100</span>
+              </div>
+              <div class="summary-row flex-between" *ngIf="logForm.get('vo2MaxVal')?.value">
+                <span>VO2 Max</span>
+                <span class="font-bold">{{ logForm.get('vo2MaxVal')?.value }} ml/kg</span>
+              </div>
+              <div class="summary-row flex-between" *ngIf="logForm.get('hydrationVal')?.value">
+                <span>Hydration</span>
+                <span class="font-bold">{{ logForm.get('hydrationVal')?.value }}%</span>
+              </div>
+              <div class="summary-row flex-between" *ngIf="logForm.get('hrvVal')?.value">
+                <span>Heart Rate Var.</span>
+                <span class="font-bold">{{ logForm.get('hrvVal')?.value }} ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  } @else {
+    <!-- Activity Dashboard View (Figma Page 33) -->
+    <div class="activity-header-row flex-between mb-lg">
+      <div>
+        <h1>My Activity</h1>
+        <p class="subtitle text-secondary">POST /user/{{ userId() }} &bull; GET returns UserProgressResponse</p>
+      </div>
+      <button class="btn btn-primary" (click)="openLogForm()">
+        <svg lucideIcon="plus" size="16"></svg>
+        Log Today's Activity
+      </button>
+    </div>
+
+    <!-- Stats Capsule Ribbon -->
+    <div class="user-stats-ribbon mb-lg">
+      <div class="stat-capsule">
+        <span class="num">{{ userPoints() }}</span>
+        <span class="lbl">Total Points</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-capsule">
+        <span class="num">{{ todaySteps() | number }}</span>
+        <span class="lbl">Today's Steps</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-capsule">
+        <span class="num">10,569</span>
+        <span class="lbl">7-Day Avg</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-capsule">
+        <span class="num">{{ streakCount() }} days</span>
+        <span class="lbl">Current Streak</span>
+      </div>
+    </div>
+
+    <!-- Last 7 Days Steps Chart -->
+    <div class="card mb-lg">
+      <h3 class="section-title mb-lg">Last 7 Days &mdash; Step Activity</h3>
+      
+      <div class="seven-days-chart-wrapper">
+        <div class="seven-days-chart">
+          @for (log of last7DaysLogs(); track log.id) {
+            <div class="seven-bar-col">
+              <div class="seven-bar-wrapper">
+                <div 
+                  class="seven-bar-fill"
+                  [ngClass]="getBarClass(log.stepCount)"
+                  [style.height.%]="getBarHeightPercentage(log.stepCount)"
+                >
+                  <span class="bar-steps-text">{{ log.stepCount | number }}</span>
+                </div>
+              </div>
+              <span class="seven-bar-date">{{ log.submittedAt | date:'dd-MM' }}</span>
+            </div>
+          }
+        </div>
+        
+        <div class="chart-goal-indicator mt-md font-bold text-xs text-secondary">
+          * Dashed goal line is 10,000 steps
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity History Table -->
+    <div class="card table-card overflow-x">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Steps</th>
+            <th>Goal Status</th>
+            <th>HRM (bpm)</th>
+            <th>SPO2 (%)</th>
+            <th>Est. Pts</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of historyLogs(); track log.id) {
+            <tr>
+              <td class="font-bold">{{ log.submittedAt | date:'yyyy-MM-dd' }}</td>
+              <td>{{ log.stepCount | number }}</td>
+              <td>
+                <span class="goal-badge" [ngClass]="getGoalBadgeClass(log.stepCount)">
+                  {{ getGoalBadgeText(log.stepCount) }}
+                </span>
+              </td>
+              <td>{{ log.heartRate || '&mdash;' }}</td>
+              <td>{{ log.tagValues?.['SPO2'] || 98 }}%</td>
+              <td class="pts-gain font-bold">+{{ calculatePoints(log.stepCount) }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="text-center py-xl">
+                <div class="empty-state">
+                <svg lucideIcon="alert-triangle" size="32" class="text-secondary"></svg>
+                  <p class="mt-sm font-bold">No activity history logged yet</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
