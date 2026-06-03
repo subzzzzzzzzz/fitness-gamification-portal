@@ -1,0 +1,723 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Alex Smith",
+      "email": "alex.smith@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 2788,
+      "milestone": "Athlete",
+      "region": "APAC",
+      "phone": "+91 690-933-8847",
+      "city": "Bengaluru",
+      "deviceId": 1,
+      "streak": 5
+    },
+    {
+      "id": "2",
+      "name": "Jane Wilson",
+      "email": "jane.wilson@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3313,
+      "milestone": "Champion",
+      "region": "APAC",
+      "phone": "+91 789-456-1230",
+      "city": "Bengaluru",
+      "deviceId": 2,
+      "streak": 12
+    },
+    {
+      "id": "3",
+      "name": "Chris Jones",
+      "email": "chris.jones@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3381,
+      "milestone": "Champion",
+      "region": "APAC",
+      "phone": "+91 999-888-7777",
+      "city": "Singapore",
+      "deviceId": 3,
+      "streak": 15
+    },
+    {
+      "id": "4",
+      "name": "Laura Jones",
+      "email": "laura.jones@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3214,
+      "milestone": "Champion",
+      "region": "APAC",
+      "phone": "+91 111-222-3333",
+      "city": "Sydney",
+      "deviceId": 1,
+      "streak": 6
+    },
+    {
+      "id": "5",
+      "name": "Chris Williams",
+      "email": "chris.williams@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3200,
+      "milestone": "Champion",
+      "region": "AMER",
+      "phone": "+1 415-555-2671",
+      "city": "San Francisco",
+      "deviceId": 2,
+      "streak": 8
+    },
+    {
+      "id": "6",
+      "name": "David Brown",
+      "email": "david.brown@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3128,
+      "milestone": "Champion",
+      "region": "APAC",
+      "phone": "+61 2 9876 5432",
+      "city": "Melbourne",
+      "deviceId": 4,
+      "streak": 4
+    },
+    {
+      "id": "15",
+      "name": "Alex Garcia",
+      "email": "alex.garcia@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3047,
+      "milestone": "Athlete",
+      "region": "APAC",
+      "phone": "+65 6789 0123",
+      "city": "Singapore",
+      "deviceId": 5,
+      "streak": 3
+    },
+    {
+      "id": "18",
+      "name": "Alex Wilson",
+      "email": "alex.wilson@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3285,
+      "milestone": "Champion",
+      "region": "EMEA",
+      "phone": "+44 20 7946 0958",
+      "city": "London",
+      "deviceId": 3,
+      "streak": 10
+    },
+    {
+      "id": "19",
+      "name": "John Garcia",
+      "email": "john.garcia@example.com",
+      "password": "user123",
+      "role": "ROLE_USER",
+      "points": 3163,
+      "milestone": "Champion",
+      "region": "APAC",
+      "phone": "+65 6123 4567",
+      "city": "Singapore",
+      "deviceId": 2,
+      "streak": 7
+    },
+    {
+      "id": "20",
+      "name": "Admin User",
+      "email": "admin@smartwatch.io",
+      "password": "admin123",
+      "role": "ROLE_ADMIN",
+      "points": 0,
+      "milestone": "Champion",
+      "region": "GLOBAL",
+      "phone": "+1 800-555-0199",
+      "city": "New York"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "name": "Morning Journey",
+      "description": "Complete 500 steps daily for 3 days.",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "steps": 500,
+      "points": 50,
+      "status": "Active",
+      "createdAt": "2026-05-01T08:00:00.000Z",
+      "updatedAt": "2026-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Weekly Journey",
+      "description": "Complete 1000 steps in a day.",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "steps": 1000,
+      "points": 100,
+      "status": "Active",
+      "createdAt": "2026-05-02T08:00:00.000Z",
+      "updatedAt": "2026-05-02T08:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "Evening Quest",
+      "description": "Complete 2000 steps daily 5 days a week.",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "steps": 2000,
+      "points": 150,
+      "status": "Inactive",
+      "createdAt": "2026-05-03T08:00:00.000Z",
+      "updatedAt": "2026-05-03T08:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "name": "Global Marathon",
+      "description": "Complete 3000 steps daily 7 days a week.",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "steps": 3000,
+      "points": 200,
+      "status": "Active",
+      "createdAt": "2026-05-04T08:00:00.000Z",
+      "updatedAt": "2026-05-04T08:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "name": "Active Run",
+      "description": "Complete 5000 steps daily.",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "steps": 5000,
+      "points": 250,
+      "status": "Active",
+      "createdAt": "2026-05-05T08:00:00.000Z",
+      "updatedAt": "2026-05-05T08:00:00.000Z"
+    },
+    {
+      "name": "Marathon Sprint",
+      "description": "",
+      "requiredTags": [
+        "GPS",
+        "HRM"
+      ],
+      "steps": 5000,
+      "points": 250,
+      "status": "Active",
+      "type": "[Tasks] Create Task",
+      "createdAt": "2026-06-02T23:55:40.074Z",
+      "updatedAt": "2026-06-02T23:58:58.472Z",
+      "id": "YW13YtC-q2k"
+    },
+    {
+      "name": "Marathon Sprint 2",
+      "description": "",
+      "requiredTags": [
+        "GPS",
+        "HRM"
+      ],
+      "steps": 5000,
+      "points": 250,
+      "status": "Active",
+      "type": "[Tasks] Create Task",
+      "createdAt": "2026-06-02T23:57:53.856Z",
+      "updatedAt": "2026-06-02T23:57:53.856Z",
+      "id": "I2yPedeKkkM"
+    }
+  ],
+  "challenges": [
+    {
+      "id": "1",
+      "name": "Endurance Challenge",
+      "description": "A fun and exciting challenge for all steps users.",
+      "scope": "FRIENDLY",
+      "status": "ACTIVE",
+      "taskId": 1,
+      "region": "APAC",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "startAt": "2026-05-20T00:00:00.000Z",
+      "endAt": "2026-06-07T23:59:59.000Z",
+      "participants": [
+        1,
+        2,
+        3,
+        4,
+        "1"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Fit Quest",
+      "description": "A fun and exciting challenge to track daily movement.",
+      "scope": "FRIENDLY",
+      "status": "CLOSED",
+      "taskId": 2,
+      "region": "APAC",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "startAt": "2026-04-01T00:00:00.000Z",
+      "endAt": "2026-05-04T23:59:59.000Z",
+      "participants": [
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Morning Challenge",
+      "description": "Complete the challenge to earn points.",
+      "scope": "GLOBAL",
+      "status": "ACTIVE",
+      "taskId": 3,
+      "region": "",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "startAt": "2026-05-15T00:00:00.000Z",
+      "endAt": "2026-06-15T23:59:59.000Z",
+      "participants": [
+        3,
+        19
+      ]
+    },
+    {
+      "id": "4",
+      "name": "APAC Sprint",
+      "description": "Regional competition for APAC participants.",
+      "scope": "REGIONAL",
+      "status": "ACTIVE",
+      "taskId": 4,
+      "region": "APAC",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "startAt": "2026-05-20T00:00:00.000Z",
+      "endAt": "2026-06-20T23:59:59.000Z",
+      "participants": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        15,
+        19,
+        "1"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Global Marathon",
+      "description": "Global step-count marathon.",
+      "scope": "GLOBAL",
+      "status": "CLOSED",
+      "taskId": 5,
+      "region": "",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "startAt": "2026-04-01T00:00:00.000Z",
+      "endAt": "2026-05-01T23:59:59.000Z",
+      "participants": [
+        1,
+        3,
+        5,
+        18
+      ]
+    },
+    {
+      "name": "Active Run Challenge",
+      "description": "",
+      "taskId": null,
+      "scope": "REGIONAL",
+      "region": "APAC",
+      "status": "ACTIVE",
+      "startAt": "2026-06-02T18:30:00.000Z",
+      "endAt": "2026-06-09T18:30:00.000Z",
+      "requiredTags": [
+        "STEPS"
+      ],
+      "type": "[Challenges] Create Challenge",
+      "participants": [],
+      "id": "PgtFchXfxpg"
+    }
+  ],
+  "devices": [
+    {
+      "id": "1",
+      "name": "Evening Watch 336",
+      "manufacturer": "FitCo",
+      "tags": [
+        "HRM",
+        "STEPS",
+        "RESPIRATORY_RATE",
+        "BLOOD_PRESSURE",
+        "STRESS",
+        "VO2_MAX",
+        "HYDRATION",
+        "HRV"
+      ],
+      "assignedUserIds": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Active Watch 970",
+      "manufacturer": "Pebble",
+      "tags": [
+        "RESPIRATORY_RATE",
+        "TEMPERATURE",
+        "HRM",
+        "ECG",
+        "STEPS"
+      ],
+      "assignedUserIds": [
+        2,
+        5,
+        19
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Active Watch 224",
+      "manufacturer": "BioWatch",
+      "tags": [
+        "SLEEP",
+        "VO2_MAX",
+        "BLOOD_PRESSURE",
+        "ECG",
+        "STEPS"
+      ],
+      "assignedUserIds": [
+        3,
+        18
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Endurance Watch 479",
+      "manufacturer": "BioWatch",
+      "tags": [
+        "HRV",
+        "BLOOD_PRESSURE",
+        "SLEEP",
+        "STEPS",
+        "HRM"
+      ],
+      "assignedUserIds": [
+        6
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Tracker Pro 812",
+      "manufacturer": "GigaWear",
+      "tags": [
+        "GPS",
+        "HRM",
+        "STEPS"
+      ],
+      "assignedUserIds": [
+        15
+      ]
+    },
+    {
+      "name": "BioSport Watch",
+      "manufacturer": "BioWatch",
+      "tags": [
+        "HRM",
+        "GPS",
+        "ECG"
+      ],
+      "assignedUserIds": [],
+      "type": "[Devices] Create Device",
+      "id": "VVsApyd1Wmw"
+    }
+  ],
+  "telemetry": [
+    {
+      "id": "1",
+      "userId": 1,
+      "stepCount": 7722,
+      "heartRate": 72.5,
+      "calories": 310,
+      "distance": 5.4,
+      "submittedAt": "2026-05-26T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 72.5,
+        "STEPS": 7722,
+        "RESPIRATORY_RATE": 16,
+        "BLOOD_PRESSURE": "118/80",
+        "STRESS": 35,
+        "VO2_MAX": 42,
+        "HYDRATION": 62,
+        "HRV": 42
+      }
+    },
+    {
+      "id": "2",
+      "userId": 1,
+      "stepCount": 8186,
+      "heartRate": 74,
+      "calories": 330,
+      "distance": 5.7,
+      "submittedAt": "2026-05-25T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 74,
+        "STEPS": 8186,
+        "RESPIRATORY_RATE": 15.5,
+        "BLOOD_PRESSURE": "120/82",
+        "STRESS": 32,
+        "VO2_MAX": 41.5,
+        "HYDRATION": 65,
+        "HRV": 45
+      }
+    },
+    {
+      "id": "3",
+      "userId": 1,
+      "stepCount": 8942,
+      "heartRate": 71,
+      "calories": 360,
+      "distance": 6.2,
+      "submittedAt": "2026-05-24T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 71,
+        "STEPS": 8942,
+        "RESPIRATORY_RATE": 16.2,
+        "BLOOD_PRESSURE": "117/78",
+        "STRESS": 30,
+        "VO2_MAX": 42.5,
+        "HYDRATION": 68,
+        "HRV": 40
+      }
+    },
+    {
+      "id": "4",
+      "userId": 1,
+      "stepCount": 10160,
+      "heartRate": 78,
+      "calories": 410,
+      "distance": 7.1,
+      "submittedAt": "2026-05-23T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 78,
+        "STEPS": 10160,
+        "RESPIRATORY_RATE": 16.5,
+        "BLOOD_PRESSURE": "119/81",
+        "STRESS": 28,
+        "VO2_MAX": 43,
+        "HYDRATION": 70,
+        "HRV": 48
+      }
+    },
+    {
+      "id": "5",
+      "userId": 1,
+      "stepCount": 12770,
+      "heartRate": 70,
+      "calories": 510,
+      "distance": 8.9,
+      "submittedAt": "2026-05-22T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 70,
+        "STEPS": 12770,
+        "RESPIRATORY_RATE": 15.8,
+        "BLOOD_PRESSURE": "115/76",
+        "STRESS": 25,
+        "VO2_MAX": 44,
+        "HYDRATION": 72,
+        "HRV": 50
+      }
+    },
+    {
+      "id": "6",
+      "userId": 1,
+      "stepCount": 12855,
+      "heartRate": 69,
+      "calories": 520,
+      "distance": 9,
+      "submittedAt": "2026-05-21T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 69,
+        "STEPS": 12855,
+        "RESPIRATORY_RATE": 15.9,
+        "BLOOD_PRESSURE": "116/77",
+        "STRESS": 24,
+        "VO2_MAX": 44.2,
+        "HYDRATION": 71,
+        "HRV": 52
+      }
+    },
+    {
+      "id": "7",
+      "userId": 1,
+      "stepCount": 14335,
+      "heartRate": 68,
+      "calories": 580,
+      "distance": 10.1,
+      "submittedAt": "2026-05-20T20:00:00.000Z",
+      "tagValues": {
+        "HRM": 68,
+        "STEPS": 14335,
+        "RESPIRATORY_RATE": 15.4,
+        "BLOOD_PRESSURE": "114/75",
+        "STRESS": 22,
+        "VO2_MAX": 45,
+        "HYDRATION": 75,
+        "HRV": 55
+      }
+    },
+    {
+      "id": "8",
+      "userId": 1,
+      "stepCount": 4200,
+      "heartRate": 76,
+      "calories": 170,
+      "distance": 2.9,
+      "submittedAt": "2026-05-19T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 4200,
+        "HRM": 76
+      }
+    },
+    {
+      "id": "9",
+      "userId": 1,
+      "stepCount": 8300,
+      "heartRate": 72,
+      "calories": 330,
+      "distance": 5.8,
+      "submittedAt": "2026-05-18T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 8300,
+        "HRM": 72
+      }
+    },
+    {
+      "id": "10",
+      "userId": 1,
+      "stepCount": 7800,
+      "heartRate": 73,
+      "calories": 310,
+      "distance": 5.5,
+      "submittedAt": "2026-05-17T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 7800,
+        "HRM": 73
+      }
+    },
+    {
+      "id": "11",
+      "userId": 1,
+      "stepCount": 9100,
+      "heartRate": 71,
+      "calories": 370,
+      "distance": 6.4,
+      "submittedAt": "2026-05-16T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 9100,
+        "HRM": 71
+      }
+    },
+    {
+      "id": "12",
+      "userId": 1,
+      "stepCount": 5100,
+      "heartRate": 75,
+      "calories": 200,
+      "distance": 3.6,
+      "submittedAt": "2026-05-15T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 5100,
+        "HRM": 75
+      }
+    },
+    {
+      "id": "13",
+      "userId": 1,
+      "stepCount": 11200,
+      "heartRate": 69,
+      "calories": 450,
+      "distance": 7.8,
+      "submittedAt": "2026-05-14T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 11200,
+        "HRM": 69
+      }
+    },
+    {
+      "id": "14",
+      "userId": 1,
+      "stepCount": 9800,
+      "heartRate": 70,
+      "calories": 390,
+      "distance": 6.8,
+      "submittedAt": "2026-05-13T20:00:00.000Z",
+      "tagValues": {
+        "STEPS": 9800,
+        "HRM": 70
+      }
+    },
+    {
+      "userId": "1",
+      "stepCount": 9222,
+      "heartRate": 85,
+      "calories": 369,
+      "distance": 6.9,
+      "submittedAt": "2026-06-03T00:00:00.000Z",
+      "tagValues": {
+        "HRM": 85,
+        "STEPS": 9222,
+        "RESPIRATORY_RATE": 16,
+        "BLOOD_PRESSURE": "118/80",
+        "STRESS": 35,
+        "VO2_MAX": 42,
+        "HYDRATION": 62,
+        "HRV": 42
+      },
+      "type": "[Telemetry] Submit Telemetry",
+      "id": "Btf-duxA1Zc"
+    }
+  ],
+  "badges": [
+    {
+      "id": "1",
+      "userId": 1,
+      "name": "Early Bird",
+      "description": "Log 5 activities before 9 AM",
+      "earnedDate": "2026-05-10T08:30:00.000Z"
+    },
+    {
+      "id": "2",
+      "userId": 1,
+      "name": "Weekend Warrior",
+      "description": "3 consecutive weekend logins",
+      "earnedDate": "2026-05-17T10:15:00.000Z"
+    },
+    {
+      "id": "3",
+      "userId": 1,
+      "name": "Consistent Performer",
+      "description": "14 consecutive days of activity",
+      "earnedDate": "2026-05-24T18:20:00.000Z"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
