@@ -1,6 +1,6 @@
-# SmartwatchWeb
+# Fitness Gamification Portal
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
+This is a fitness/health gamification web app for a smartwatch platform: users sign in, track tasks and challenges, view telemetry/activity, manage devices, and compete on a leaderboard. The app is built as an Angular single-page app with a mock backend that exposes auth, ranking, and activity data.
 
 ## Development server
 
